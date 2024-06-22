@@ -1,0 +1,7 @@
+Java Launcher: C:\Users\Admin\.gradle\jdks\adoptium-17-x64-hotspot-windows\jdk-17.0.10+7\bin\java.exe
+Arguments: '--inJar, C:\Users\Admin\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.20.1-47.3.1\forge-1.20.1-47.3.1-injected.jar, --outJar, C:\Users\Admin\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.20.1-47.3.1_mapped_parchment_2023.09.03-1.20.1\forge-1.20.1-47.3.1_mapped_parchment_2023.09.03-1.20.1.jar, --logFile, accesstransform.log, --atFile, H:\Minecraft\modding\trackwork\build\_atJar_4\parent_at.cfg'
+Classpath:
+ - C:\Users\Admin\.gradle\caches\forge_gradle\maven_downloader\net\minecraftforge\accesstransformers\8.2.0\accesstransformers-8.2.0-fatjar.jar
+Working directory: H:\Minecraft\modding\trackwork\build\_atJar_4
+Main class: net.minecraftforge.accesstransformer.TransformerProcessor
+====================================

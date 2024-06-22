@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.example.trackwork.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "examplemod.refmap.json",
+  "mixins": [
+    "MixinRotationPropagator"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
