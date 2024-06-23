@@ -24,7 +24,7 @@ public class WheelEntity extends VSPhysicsEntity {
 
     @Override
     public EntityDimensions getDimensions(Pose pPose) {
-        return super.getDimensions(pPose);
+        return new EntityDimensions(0.01F, 0.01F, false);
     }
 
     public void tick() {
@@ -53,7 +53,7 @@ public class WheelEntity extends VSPhysicsEntity {
         public static PhysicsEntityData createBasicData(long shipId, @NotNull ShipTransform transform, double radius, double mass) {
             double inertia = 0.4 * mass * radius * radius;
             ShipInertiaData inertiaData = new ShipInertiaDataImpl(new Vector3d(), mass * radius, new Matrix3d().scale(inertia));
-            VSWheelCollisionShapeData collisionShapeData = new VSWheelCollisionShapeData(radius, 0.45);
+            VSWheelCollisionShapeData collisionShapeData = new VSWheelCollisionShapeData(radius, 0.45/*,(int)(11.0 * radius)*/);
             return new PhysicsEntityData(shipId, transform, inertiaData, new Vector3d(), new Vector3d(), collisionShapeData, -1, 0.8, 0.6, 0.6, false);
         }
     }

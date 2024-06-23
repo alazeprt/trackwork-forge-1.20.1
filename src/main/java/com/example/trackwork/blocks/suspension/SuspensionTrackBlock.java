@@ -28,13 +28,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SuspensionTrackBlock extends TrackBaseBlock<SuspensionTrackBlockEntity> {
 //   public static final DamageSource DAMAGE_SOURCE_TRACK = new DamageSource( new DamageType("trackwork.track", 0));
-   public static final Property<TrackVariant> WHEEL_VARIANT = EnumProperty.create("variant", SuspensionTrackBlock.TrackVariant.class);
+   public static final Property<TrackVariant> WHEEL_VARIANT = EnumProperty.create("variant", TrackVariant.class);
 
    public SuspensionTrackBlock(Properties properties) {
       super(properties);
-      this.registerDefaultState(this.defaultBlockState().setValue(PART, TrackBaseBlock.TrackPart.NONE).setValue(WHEEL_VARIANT, SuspensionTrackBlock.TrackVariant.WHEEL));
+      this.registerDefaultState(this.getStateDefinition().any().setValue(PART, TrackBaseBlock.TrackPart.NONE).setValue(WHEEL_VARIANT, TrackVariant.WHEEL));
    }
-
 
    @Override
    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -45,30 +44,32 @@ public class SuspensionTrackBlock extends TrackBaseBlock<SuspensionTrackBlockEnt
    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
       ItemStack heldItem = player.getItemInHand(hand);
       if (AllItems.WRENCH.isIn(heldItem) && state.getValue(WHEEL_VARIANT) != null) {
-         SuspensionTrackBlock.TrackVariant old = state.getValue(WHEEL_VARIANT);
+         TrackVariant old = state.getValue(WHEEL_VARIANT);
          switch (old) {
             case WHEEL:
-               level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, SuspensionTrackBlock.TrackVariant.BLANK));
+               level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, TrackVariant.BLANK));
                break;
             default:
-               level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, SuspensionTrackBlock.TrackVariant.WHEEL));
+               level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, TrackVariant.WHEEL));
          }
          return InteractionResult.SUCCESS;
       } else {
          return super.use(state, level, pos, player, hand, hit);
       }
    }
+
    @Override
    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
       return false;
    }
+
    public Class<SuspensionTrackBlockEntity> getBlockEntityClass() {
       return SuspensionTrackBlockEntity.class;
    }
 
    @Override
    public RenderShape getRenderShape(BlockState pState) {
-      return RenderShape.MODEL;
+       return RenderShape.MODEL;
    }
 
    @Override
@@ -85,7 +86,7 @@ public class SuspensionTrackBlock extends TrackBaseBlock<SuspensionTrackBlockEnt
       return TrackworkBlockEntityTypes.SUSPENSION_TRACK.get();
    }
 
-   public static enum TrackVariant implements StringRepresentable {
+   public enum TrackVariant implements StringRepresentable {
       WHEEL,
       WHEEL_ROLLER,
       ROLLER,

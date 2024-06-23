@@ -18,7 +18,8 @@ public class SprocketInstance extends ShaftInstance<SprocketBlockEntity> impleme
    final Axis rotationAxis;
    final float rotationMult;
    final BlockPos visualPos;
-   private float lastAngle = Float.NaN;
+   private final float lastAngle = Float.NaN;
+
    public SprocketInstance(MaterialManager materialManager, SprocketBlockEntity blockEntity) {
       super(materialManager, blockEntity);
       this.gantryCogs = this.getTransformMaterial().getModel(TrackworkPartialModels.COGS, this.blockState).createInstance();

@@ -8,6 +8,5 @@
   "item.trackwork.track_tool_kit" : "Track Toolkit",
   "block.trackwork.track_level_controller" : "Suspension Controller",
   "death.attack.trackwork.track" : "%1$s was flattened by tracks",
-  "death.attack.trackwork.track.player" : "%1$s was thrown into tracks by %2$s",
-  "item_group.trackwork.trackwork": ""
+  "death.attack.trackwork.track.player" : "%1$s was thrown into tracks by %2$s"
 }

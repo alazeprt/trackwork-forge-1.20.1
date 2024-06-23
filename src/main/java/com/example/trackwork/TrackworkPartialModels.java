@@ -17,7 +17,7 @@ public class TrackworkPartialModels {
     public static final PartialModel LARGE_SUSPENSION_WHEEL = block("large_wheels");
 
     private static PartialModel block(String path) {
-        return new PartialModel(ExampleMod.getResource("block/" + path));
+        return new PartialModel(Trackwork.getResource("block/" + path));
     }
 
     public static void init() {

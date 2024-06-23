@@ -2,15 +2,9 @@ package com.example.trackwork.forces;
 
 import com.example.trackwork.data.PhysEntityTrackData;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mojang.datafixers.util.Pair;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import kotlin.jvm.functions.Function1;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +17,13 @@ import org.valkyrienskies.core.api.ships.ShipForcesInducer;
 import org.valkyrienskies.core.api.ships.properties.ShipTransform;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @JsonAutoDetect(
         fieldVisibility = Visibility.ANY
@@ -54,7 +55,7 @@ public class PhysicsEntityTrackController implements ShipForcesInducer {
    public void applyForcesAndLookupPhysShips(@NotNull PhysShip physShip, @NotNull Function1<? super Long, ? extends PhysShip> lookupPhysShip) {
       while (!this.createdTrackData.isEmpty()) {
          Pair<Integer, PhysEntityTrackData.CreateData> createData = this.createdTrackData.remove();
-         this.trackData.put(createData.getFirst(), PhysEntityTrackData.from((PhysEntityTrackData.CreateData)createData.getSecond()));
+         this.trackData.put(createData.getFirst(), PhysEntityTrackData.from(createData.getSecond()));
       }
 
       this.trackUpdateData.forEach((id, data) -> {
@@ -139,9 +140,7 @@ public class PhysicsEntityTrackController implements ShipForcesInducer {
       if (this == other) {
          return true;
       } else {
-         return !(other instanceof PhysicsEntityTrackController otherController)
-                 ? false
-                 : Objects.equals(this.trackData, otherController.trackData)
+         return other instanceof PhysicsEntityTrackController otherController && Objects.equals(this.trackData, otherController.trackData)
                  && Objects.equals(this.trackUpdateData, otherController.trackUpdateData)
                  && areQueuesEqual(this.createdTrackData, otherController.createdTrackData)
                  && areQueuesEqual(this.removedTracks, otherController.removedTracks)

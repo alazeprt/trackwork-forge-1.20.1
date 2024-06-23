@@ -8,13 +8,13 @@ import com.example.trackwork.rendering.SuspensionRenderer;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
 public class TrackworkBlockEntityTypes {
-    public static final BlockEntityEntry<SuspensionTrackBlockEntity> SUSPENSION_TRACK = ExampleMod.REGISTRATE
+    public static final BlockEntityEntry<SuspensionTrackBlockEntity> SUSPENSION_TRACK = Trackwork.REGISTRATE
             .blockEntity("suspension_track", SuspensionTrackBlockEntity::new)
             .validBlocks(TrackworkBlocks.SUSPENSION_TRACK)
             .renderer(() -> SuspensionRenderer::new)
             .register();
 
-    public static final BlockEntityEntry<SprocketBlockEntity> SPROCKET_TRACK_TYPE = ExampleMod.REGISTRATE
+    public static final BlockEntityEntry<SprocketBlockEntity> SPROCKET_TRACK_TYPE = Trackwork.REGISTRATE
             .blockEntity("sprocket_track", SprocketBlockEntity::new)
             .instance(() -> SprocketInstance::new)
             .validBlocks(TrackworkBlocks.SPROCKET_TRACK)

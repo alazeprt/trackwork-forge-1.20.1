@@ -125,7 +125,7 @@ public class TrackBeltRenderer {
 
         public ScalableScroll(KineticBlockEntity be, float speed, Axis axis) {
             this.trueSpeed = axis == Axis.X ? speed : -speed;
-            this.time = AnimationTickHolder.getRenderTime(be.getLevel()) * 1.0F;
+            this.time = AnimationTickHolder.getRenderTime(be.getLevel());
             this.scrollMult = 0.5F;
             SpriteShiftEntry spriteShift = TrackworkSpriteShifts.BELT;
             this.spriteSize = spriteShift.getTarget().getV1() - spriteShift.getTarget().getV0();

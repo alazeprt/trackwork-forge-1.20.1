@@ -10,13 +10,6 @@ import com.example.trackwork.entities.WheelEntity;
 import com.example.trackwork.forces.PhysicsEntityTrackController;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.foundation.utility.Lang;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.function.Supplier;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +34,12 @@ import org.valkyrienskies.core.apigame.physics.PhysicsEntityData;
 import org.valkyrienskies.core.impl.game.ships.ShipTransformImpl;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 import org.valkyrienskies.mod.common.util.VectorConversionsMCKt;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackPointProvider {
     private float wheelRadius;
@@ -112,7 +111,7 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
     public boolean summonBelt() {
         if (!this.getLevel().isClientSide) {
         TrackBeltEntity e = TrackBeltEntity.create(this.getLevel(), this.getBlockPos());
-            e.setPos(Vec3.atBottomCenterOf(this.getBlockPos()));
+            e.setPos(Vec3.atLowerCornerOf(this.getBlockPos()));
             this.getLevel().addFreshEntity(e);
         }
 
@@ -125,17 +124,17 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
                 return;
             }
 
-            ServerLevel slevel = (ServerLevel) this.getLevel();
+            ServerLevel slevel = (ServerLevel)this.getLevel();
             ServerShip ship = (ServerShip)this.ship.get();
             if (ship != null) {
                 PhysicsEntityTrackController controller = PhysicsEntityTrackController.getOrCreate(ship);
                 if (this.assembled) {
-                    controller.removeTrackBlock((ServerLevel) this.getLevel(), this.trackID);
+                    controller.removeTrackBlock((ServerLevel)this.getLevel(), this.trackID);
                 }
 
                 this.assembled = true;
                 Vector3dc trackLocalPos = VectorConversionsMCKt.toJOML(Vec3.atLowerCornerOf(this.getBlockPos()));
-                WheelEntity wheel = (WheelEntity) TrackworkEntities.WHEEL.create(slevel);
+                WheelEntity wheel = TrackworkEntities.WHEEL.create(slevel);
                 long wheelId = VSGameUtilsKt.getShipObjectWorld(slevel).allocateShipId(VSGameUtilsKt.getDimensionId(slevel));
                 double wheelRadius = this.wheelRadius;
                 Vector3dc wheelGlobalPos = ship.getTransform().getShipToWorld().transformPosition(trackLocalPos, new Vector3d());
@@ -154,7 +153,7 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
     }
 
     private PhysEntityTrackData.CreateData constrainWheel(ServerShip ship, long wheelId, Vector3dc trackLocalPos) {
-        ServerLevel slevel = (ServerLevel) this.getLevel();
+        ServerLevel slevel = (ServerLevel)this.getLevel();
         double attachCompliance = 1.0E-8;
         double attachMaxForce = 1.0E150;
         double hingeMaxForce = 1.0E75;
@@ -174,7 +173,7 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
         Integer axleId = VSGameUtilsKt.getShipObjectWorld(slevel).createNewConstraint(axle);
         return sliderId != null && axleId != null
                 ? new PhysEntityTrackData.CreateData(
-                trackLocalPos, axis, wheelId, 0.0, 0.0, new VSConstraintAndId(sliderId, slider), new VSConstraintAndId(axleId, axle), (double)this.getSpeed()
+                trackLocalPos, axis, wheelId, 0.0, 0.0, new VSConstraintAndId(sliderId, slider), new VSConstraintAndId(axleId, axle), this.getSpeed()
         )
                 : null;
     }
@@ -185,7 +184,7 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
         if (this.ship.get() != null && this.assembleNextTick && !this.assembled && this.getLevel() != null) {
             this.assemble();
             this.assembleNextTick = false;
-        } else if (this.getLevel() != null) {
+        }else if (this.getLevel() != null) {
             if (this.assembled && !this.getLevel().isClientSide) {
                 ServerShip ship = (ServerShip)this.ship.get();
                 if (ship != null) {
@@ -199,7 +198,7 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
 
                     wheel.keepAlive();
                     PhysicsEntityTrackController controller = PhysicsEntityTrackController.getOrCreate(ship);
-                    PhysEntityTrackData.UpdateData data = new PhysEntityTrackData.UpdateData(0.0, 0.0, (double)this.getSpeed());
+                    PhysEntityTrackData.UpdateData data = new PhysEntityTrackData.UpdateData(0.0, 0.0, this.getSpeed());
                     controller.updateTrackBlock(this.trackID, data);
                 }
             }
@@ -208,7 +207,7 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
 
     public void addMassStats(List<MutableComponent> tooltip, float mass) {
         Lang.text("Total Mass").style(ChatFormatting.GRAY).forGoggles(tooltip);
-        Lang.number((double)mass).text(" kg").style(ChatFormatting.WHITE).forGoggles(tooltip, 1);
+        Lang.number(mass).text(" kg").style(ChatFormatting.WHITE).forGoggles(tooltip, 1);
     }
 
     @Override
@@ -230,11 +229,9 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
     public Vec3 getTrackPointSlope(float partialTicks) {
         return new Vec3(
                 0.0,
-                (double)(
-                        Mth.lerp(partialTicks, this.nextPointVerticalOffset.getFirst(), this.nextPointVerticalOffset.getSecond())
-                                - this.getPointDownwardOffset(partialTicks)
-                ),
-                (double)this.nextPointHorizontalOffset
+                Mth.lerp(partialTicks, this.nextPointVerticalOffset.getFirst(), this.nextPointVerticalOffset.getSecond())
+                        - this.getPointDownwardOffset(partialTicks),
+                this.nextPointHorizontalOffset
         );
     }
 

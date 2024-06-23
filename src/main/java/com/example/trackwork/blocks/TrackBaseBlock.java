@@ -14,9 +14,9 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -42,43 +42,33 @@ public abstract class TrackBaseBlock<BE extends TrackBaseBlockEntity> extends Ro
     public Axis getRotationAxis(BlockState state) {
         return state.getValue(AXIS);
     }
-
     @Override
     public Class<BE> getBlockEntityClass() {
         return null;
     }
-
     @Override
     public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return Shapes.empty();
     }
-
     @Override
     public BlockEntityType<? extends BE> getBlockEntityType() {
         return null;
     }
-
     public static boolean isValidAxis(Axis axis) {
         return !axis.isHorizontal();
     }
-
-    public boolean shouldCheckWeakPower(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
         return false;
     }
 
-//    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+    //    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
 //        if ((Boolean)TrackworkConfigs.server().enableTrackThrow.get()) {
 //            this.withBlockEntityDo(level, pos, be -> be.throwTrack(false));
 //        }
 //
 //        super.onBlockExploded(state, level, pos, explosion);
 //    }
-
-
-    @Override
-    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        super.onPlace(state, worldIn, pos, oldState, isMoving);
-    }
 
     @NotNull
     public PushReaction pistonBehavior(@NotNull BlockState state) {
@@ -102,10 +92,13 @@ public abstract class TrackBaseBlock<BE extends TrackBaseBlockEntity> extends Ro
         if (axis == null) {
             axis = placedAxis;
         }
+
         if (axis == Axis.Y) {
             axis = Axis.X;
         }
+
         BlockState state = this.defaultBlockState().setValue(AXIS, axis);
+
         for (Direction facing : Iterate.directions) {
             if (facing.getAxis() != axis) {
                 BlockPos pos = context.getClickedPos();
@@ -182,7 +175,7 @@ public abstract class TrackBaseBlock<BE extends TrackBaseBlockEntity> extends Ro
         } else if (facing.getAxis() != connectionAxis) {
             return false;
         } else {
-            return facing.getAxisDirection() == AxisDirection.POSITIVE && (part == TrackPart.MIDDLE || part == TrackPart.START) || facing.getAxisDirection() == AxisDirection.NEGATIVE && (part == TrackPart.MIDDLE || part == TrackPart.END);
+            return facing.getAxisDirection() == AxisDirection.POSITIVE && (part == TrackPart.MIDDLE || part == TrackPart.START) || facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE && (part == TrackPart.MIDDLE || part == TrackPart.END);
         }
     }
 
@@ -213,11 +206,11 @@ public abstract class TrackBaseBlock<BE extends TrackBaseBlockEntity> extends Ro
         Axis newAxis = normal.getAxis();
         Axis newConnectingDirection = direction.getAxis();
         boolean alongFirst = newAxis == Axis.X && newConnectingDirection == Axis.Y || newAxis != Axis.X && newConnectingDirection == Axis.X;
-        return (BlockState)((BlockState) pState.setValue(AXIS, newAxis)).setValue(CONNECTED_ALONG_FIRST_COORDINATE, alongFirst);
+        return pState.setValue(AXIS, newAxis).setValue(CONNECTED_ALONG_FIRST_COORDINATE, alongFirst);
     }
 
-    @Override
-    public BlockState mirror(BlockState pState, Mirror pMirror) {
+    @NotNull
+    public BlockState mirror(@NotNull BlockState pState, Mirror pMirror) {
         Axis connectionAxis = getConnectionAxis(pState);
         return pMirror.mirror(Direction.fromAxisAndDirection(connectionAxis, AxisDirection.POSITIVE)).getAxisDirection() == AxisDirection.POSITIVE
                 ? pState
@@ -237,7 +230,7 @@ public abstract class TrackBaseBlock<BE extends TrackBaseBlockEntity> extends Ro
         return this.rotate(this.mirror(state, transform.mirror), transform.rotation, transform.rotationAxis);
     }
 
-    public static enum TrackPart implements StringRepresentable {
+    public enum TrackPart implements StringRepresentable {
         START,
         MIDDLE,
         END,

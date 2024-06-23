@@ -2,6 +2,7 @@ package com.example.trackwork.blocks;
 
 
 import com.example.trackwork.rendering.TrackBeltRenderer;
+import com.example.trackwork.networking.packet.ThrowTrackPacket;
 import com.mojang.datafixers.util.Pair;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
@@ -11,7 +12,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,7 +24,7 @@ public abstract class TrackBaseBlockEntity extends KineticBlockEntity implements
     protected Pair<Float, Float> nextPointVerticalOffset = new Pair(0.0F, 0.0F);
     protected float nextPointHorizontalOffset = 0.0F;
     @NotNull
-    private ITrackPointProvider.PointType nextPoint = ITrackPointProvider.PointType.NONE;
+    private ITrackPointProvider.PointType nextPoint = PointType.NONE;
 
     public TrackBaseBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
@@ -36,7 +36,7 @@ public abstract class TrackBaseBlockEntity extends KineticBlockEntity implements
             this.nextPointHorizontalOffset = track.getPointHorizontalOffset();
             this.nextPoint = track.getTrackPointType();
         } else {
-            this.nextPoint = ITrackPointProvider.PointType.NONE;
+            this.nextPoint = PointType.NONE;
         }
     }
 
@@ -60,14 +60,14 @@ public abstract class TrackBaseBlockEntity extends KineticBlockEntity implements
 //                }
 //            }
 //
-//            TrackPackets.getChannel().send(this.packetTarget(), new ThrowTrackPacket(this.getPos(), this.detracked));
+//            NetworkManager.sendToAllPlayerTrackingThisBlock(new ThrowTrackPacket(this.getBlockPos(), detracked), this);
 //        }
     }
 
     @Nullable
     private BlockPos nextTrackPosition(BlockState state, BlockPos pos, boolean forward) {
         TrackBaseBlock.TrackPart part = state.getValue(TrackBaseBlock.PART);
-        Direction next = Direction.get(AxisDirection.POSITIVE, around(state.getValue(RotatedPillarKineticBlock.AXIS)));
+        Direction next = Direction.get(Direction.AxisDirection.POSITIVE, around(state.getValue(RotatedPillarKineticBlock.AXIS)));
         int offset = forward ? 1 : -1;
         return (part != TrackBaseBlock.TrackPart.END || !forward) && (part != TrackBaseBlock.TrackPart.START || forward) ? pos.relative(next, offset) : null;
     }
@@ -85,7 +85,6 @@ public abstract class TrackBaseBlockEntity extends KineticBlockEntity implements
             case X -> new Vec3(0.0, -1.0, 0.0);
             case Y -> new Vec3(0.0, 0.0, 0.0);
             case Z -> new Vec3(0.0, -1.0, 0.0);
-            default -> throw new IncompatibleClassChangeError();
         };
     }
 
@@ -94,16 +93,14 @@ public abstract class TrackBaseBlockEntity extends KineticBlockEntity implements
             case X -> new Vector3d(1.0, 0.0, 0.0);
             case Y -> new Vector3d(0.0, 1.0, 0.0);
             case Z -> new Vector3d(0.0, 0.0, 1.0);
-            default -> throw new IncompatibleClassChangeError();
         };
     }
 
-    public static Vector3d getActionVec3d(Axis axis, float length) {
+    public static Vector3d getActionVec3(Axis axis, float length) {
         return switch (axis) {
-            case X -> new Vector3d(0.0, 0.0, (double)length);
+            case X -> new Vector3d(0.0, 0.0, length);
             case Y -> new Vector3d(0.0, 0.0, 0.0);
-            case Z -> new Vector3d((double)length, 0.0, 0.0);
-            default -> throw new IncompatibleClassChangeError();
+            case Z -> new Vector3d(length, 0.0, 0.0);
         };
     }
 
@@ -124,10 +121,10 @@ public abstract class TrackBaseBlockEntity extends KineticBlockEntity implements
         super.read(compound, clientPacket);
     }
 
-//    public void handlePacket(ThrowTrackPacket packet) {
-//        this.detracked = packet.detracked;
-//        if (this.detracked) {
-//            this.speed = 0.0F;
-//        }
-//    }
+    public void handlePacket(ThrowTrackPacket p) {
+        this.detracked = p.detracked;
+        if (this.detracked) {
+            this.speed = 0.0F;
+        }
+    }
 }

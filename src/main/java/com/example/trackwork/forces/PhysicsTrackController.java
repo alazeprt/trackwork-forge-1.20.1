@@ -2,15 +2,9 @@ package com.example.trackwork.forces;
 
 import com.example.trackwork.data.PhysTrackData;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mojang.datafixers.util.Pair;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Math;
@@ -23,6 +17,13 @@ import org.valkyrienskies.core.api.ships.ShipForcesInducer;
 import org.valkyrienskies.core.api.ships.properties.ShipTransform;
 import org.valkyrienskies.core.impl.game.ships.PhysShipImpl;
 import org.valkyrienskies.physics_api.PoseVel;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @JsonAutoDetect(
    fieldVisibility = Visibility.ANY
@@ -42,7 +43,7 @@ public class PhysicsTrackController implements ShipForcesInducer {
    private int nextBearingID = 0;
    private volatile Vector3dc suspensionAdjust = new Vector3d(0.0, 1.0, 0.0);
    private volatile float suspensionStiffness = 1.0F;
-   private float debugTick = 0.0F;
+   private final float debugTick = 0.0F;
 
    public static PhysicsTrackController getOrCreate(ServerShip ship) {
       if (ship.getAttachment(PhysicsTrackController.class) == null) {

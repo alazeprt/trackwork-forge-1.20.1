@@ -1,20 +1,15 @@
 package com.example.trackwork.entities;
 
-
 import com.example.trackwork.TrackworkEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-
 
 public class TrackBeltEntity extends Entity {
     private static final EntityDataAccessor<BlockPos> PARENT = SynchedEntityData.defineId(TrackBeltEntity.class, EntityDataSerializers.BLOCK_POS);
@@ -26,15 +21,15 @@ public class TrackBeltEntity extends Entity {
         super(type, level);
     }
 
-    public static TrackBeltEntity create(Level level, BlockPos pos) {
-        TrackBeltEntity e = (TrackBeltEntity) TrackworkEntities.BELT.create(level);
-        e.parentPos = pos;
-        return e;
-    }
-
     @Override
     protected void defineSynchedData() {
+        this.entityData.define(PARENT, null);
+    }
 
+    public static TrackBeltEntity create(Level level, BlockPos pos) {
+        TrackBeltEntity e = TrackworkEntities.BELT.create(level);
+        e.parentPos = pos;
+        return e;
     }
 
     public void tick() {
@@ -55,11 +50,6 @@ public class TrackBeltEntity extends Entity {
     public BlockPos getParentPos() {
         return this.entityData.get(PARENT);
     }
-
-    protected void initDataTracker() {
-        this.entityData.define(PARENT, null);
-    }
-
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.getBoolean("ParentPos")) {
@@ -68,13 +58,9 @@ public class TrackBeltEntity extends Entity {
 
         this.entityData.set(PARENT, this.parentPos);
     }
+
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         compound.put("ParentPos", NbtUtils.writeBlockPos(this.parentPos));
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
     }
 }

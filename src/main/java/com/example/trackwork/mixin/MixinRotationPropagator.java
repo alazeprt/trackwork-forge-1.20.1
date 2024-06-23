@@ -42,6 +42,7 @@ public abstract class MixinRotationPropagator {
       if (from instanceof TrackBaseBlockEntity te1 && to instanceof TrackBaseBlockEntity te2) {
          return !te1.isDetracked() && !te2.isDetracked();
       }
+
       return false;
    }
 }
