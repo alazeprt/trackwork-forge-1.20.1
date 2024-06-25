@@ -25,9 +25,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class SuspensionTrackBlock extends TrackBaseBlock<SuspensionTrackBlockEntity> {
-//   public static final DamageSource DAMAGE_SOURCE_TRACK = new DamageSource( new DamageType("trackwork.track", 0));
    public static final Property<TrackVariant> WHEEL_VARIANT = EnumProperty.create("variant", TrackVariant.class);
 
    public SuspensionTrackBlock(Properties properties) {
@@ -43,14 +43,12 @@ public class SuspensionTrackBlock extends TrackBaseBlock<SuspensionTrackBlockEnt
    @Override
    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
       ItemStack heldItem = player.getItemInHand(hand);
-      if (AllItems.WRENCH.isIn(heldItem) && state.getValue(WHEEL_VARIANT) != null) {
+      if (AllItems.WRENCH.isIn(heldItem)) {
          TrackVariant old = state.getValue(WHEEL_VARIANT);
-         switch (old) {
-            case WHEEL:
-               level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, TrackVariant.BLANK));
-               break;
-            default:
-               level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, TrackVariant.WHEEL));
+         if (old == TrackVariant.WHEEL) {
+            level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, TrackVariant.BLANK));
+         } else {
+            level.setBlockAndUpdate(pos, state.setValue(WHEEL_VARIANT, TrackVariant.WHEEL));
          }
          return InteractionResult.SUCCESS;
       } else {
@@ -68,7 +66,7 @@ public class SuspensionTrackBlock extends TrackBaseBlock<SuspensionTrackBlockEnt
    }
 
    @Override
-   public RenderShape getRenderShape(BlockState pState) {
+   public RenderShape getRenderShape(@NotNull BlockState pState) {
        return RenderShape.MODEL;
    }
 
@@ -88,11 +86,9 @@ public class SuspensionTrackBlock extends TrackBaseBlock<SuspensionTrackBlockEnt
 
    public enum TrackVariant implements StringRepresentable {
       WHEEL,
-      WHEEL_ROLLER,
-      ROLLER,
       BLANK;
       @Override
-      public String getSerializedName() {
+      public @NotNull String getSerializedName() {
          return Lang.asId(this.name());
       }
    }

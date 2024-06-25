@@ -189,8 +189,6 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
                 ServerShip ship = (ServerShip)this.ship.get();
                 if (ship != null) {
                     WheelEntity wheel = this.wheel.get();
-                    // TODO: Look into this
-                    // if (wheel == null || !wheel.m_6084_() || wheel.m_146910_()) {
                     if (wheel == null) {
                         this.assemble();
                         wheel = this.wheel.get();
@@ -205,10 +203,10 @@ public class SprocketBlockEntity extends TrackBaseBlockEntity implements ITrackP
         }
     }
 
-    public void addMassStats(List<MutableComponent> tooltip, float mass) {
+    /*public void addMassStats(List<MutableComponent> tooltip, float mass) {
         Lang.text("Total Mass").style(ChatFormatting.GRAY).forGoggles(tooltip);
         Lang.number(mass).text(" kg").style(ChatFormatting.WHITE).forGoggles(tooltip, 1);
-    }
+    }*/
 
     @Override
     public float getPointDownwardOffset(float partialTicks) {

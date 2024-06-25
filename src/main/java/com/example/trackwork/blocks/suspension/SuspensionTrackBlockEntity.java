@@ -4,8 +4,6 @@ import com.example.trackwork.blocks.ITrackPointProvider;
 import com.example.trackwork.blocks.TrackBaseBlockEntity;
 import com.example.trackwork.data.PhysTrackData;
 import com.example.trackwork.forces.PhysicsTrackController;
-//import com.example.trackwork.networking.Tr;
-import com.example.trackwork.networking.NetworkManager;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -33,7 +31,6 @@ import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 import org.valkyrienskies.mod.common.util.VectorConversionsMCKt;
-import com.example.trackwork.networking.packet.SuspensionWheelPacket;
 
 import java.util.Random;
 import java.util.function.Supplier;
@@ -276,7 +273,7 @@ public class SuspensionTrackBlockEntity extends TrackBaseBlockEntity implements 
                   buf.writeBlockPos(this.getBlockPos());
                   buf.writeFloat(this.wheelTravel);
                   ServerLevel serverLevel = (ServerLevel) level;
-                  NetworkManager.sendToAllPlayerTrackingThisBlock(new SuspensionWheelPacket(this.getBlockPos(), wheelTravel), this);
+                  //NetworkManager.sendToAllPlayerTrackingThisBlock(new SuspensionWheelPacket(this.getBlockPos(), wheelTravel), this);
                }
             }
          }
@@ -402,8 +399,8 @@ public class SuspensionTrackBlockEntity extends TrackBaseBlockEntity implements 
    public record ClipResult(Vector3dc trackTangent, Vec3 suspensionLength, @Nullable Long groundShipId) {
    }
 
-   public void handlePacket(SuspensionWheelPacket p) {
+   /*public void handlePacket(SuspensionWheelPacket p) {
       this.prevWheelTravel = this.wheelTravel;
       this.wheelTravel = p.wheelTravel;
-   }
+   }*/
 }

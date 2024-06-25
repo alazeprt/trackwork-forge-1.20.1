@@ -2,7 +2,6 @@ package com.example.trackwork.blocks;
 
 
 import com.example.trackwork.rendering.TrackBeltRenderer;
-import com.example.trackwork.networking.packet.ThrowTrackPacket;
 import com.mojang.datafixers.util.Pair;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
@@ -121,10 +120,10 @@ public abstract class TrackBaseBlockEntity extends KineticBlockEntity implements
         super.read(compound, clientPacket);
     }
 
-    public void handlePacket(ThrowTrackPacket p) {
+    /*public void handlePacket(ThrowTrackPacket p) {
         this.detracked = p.detracked;
         if (this.detracked) {
             this.speed = 0.0F;
         }
-    }
+    }*/
 }
